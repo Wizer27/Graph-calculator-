@@ -3,7 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
-# Заголовок приложения
+
+
 def f(s):
     return ne.evaluate(replace_abs_notation(s), global_dict=None)
 def replace_abs_notation(expression):
@@ -33,16 +34,15 @@ def replace_abs_notation(expression):
             result = expression[:i+1] + '*' + expression[i:]
             result = ''.join(result)
     return result
-# Сайдбар для ввода параметров
 with st.sidebar:
-    x_min = st.number_input("Минимум", value=0)
-    x_max = st.number_input("Максимум", value=10)
+    x_min = st.number_input("Минимум", value=-20)
+    x_max = st.number_input("Максимум", value=20)
     steps = st.slider("Количество точек", 50, 500)
     grid = st.checkbox("Сетка")
     function = st.text_input("Формула", value='x') + ' '
     fun2 = st.text_input("Формула",value = '')   
-    # Описание функций
-    description = st.empty()  # Пустой контейнер для описания
+    
+    description = st.empty() 
 
     if 'sin' in function:
         description.text("Синус - это тригонометрическая функция, которая описывает колебания.")
@@ -56,19 +56,22 @@ with st.sidebar:
         description.text("Логарифм - это функция, обратная экспоненте, которая описывает рост или затухание в логарифмической шкале.")
     elif 'sqrt' in function:
         description.text("Квадратный корень - это функция, которая возвращает квадратный корень из числа.")
+    elif 'sin' not in function  and 'cos' not in function and 'tan' not in function and 'exp' not in function and 'exp' not in function and 'log' not in function and 'sqrt' not in function:
+        description.text("Линейная функция - вида kx + b, некоторые переменные могут отсутствовать.")   
     else:
-        description.text("")  # Очищаем описание, если функция не распознана
-# Генерация данных для графика
+        description.text("")  
+   
+
 x = linspace(x_min, x_max, steps)
 try:
-    y = eval(replace_abs_notation(function)) # Вычисление значения функции
+    y = eval(replace_abs_notation(function))
 except Exception as e:
     st.error(f"Ошибка в формуле: {e}")
-    y = np.zeros_like(x)  # Если ошибка, строим нулевой график
+    y = np.zeros_like(x) 
 if fun2 != '':
     fun2 = fun2 + ' '
     try:
-        y2 = eval(replace_abs_notation(fun2))# Вычисление значения функции
+        y2 = eval(replace_abs_notation(fun2))
     except Exception as e:
         st.error(f"Ошибка в формуле: {e}")
         y2 = np.zeros_like(x)        
