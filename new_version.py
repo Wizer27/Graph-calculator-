@@ -92,3 +92,4 @@ if grid:
     plt.grid()
 # Отображение графика в Streamlit
 st.pyplot(figure)
+###soon i will made an english version
