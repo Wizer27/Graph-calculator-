@@ -93,3 +93,4 @@ if grid:
 # Отображение графика в Streamlit
 st.pyplot(figure)
 ###soon i will made an english version
+### in update you will be able to find the dot 
