@@ -36,7 +36,7 @@ def replace_abs_notation(expression):
             i += 1
     result = ''.join(result).replace('^', '**')
     for i in range(len(expression)):
-        if expression[i] == 'x' and (expression[i - 1].isdigit() or expression[i-1] == ')'):
+        if expression[i] == 'x' and expression[i - 1].isdigit():
             result = expression[:i] + '*' + expression[i:]
             result = ''.join(result)
         if expression[i] == 'x' and (expression[i + 1] == '(' or expression[i + 1].isdigit()):
@@ -45,6 +45,7 @@ def replace_abs_notation(expression):
     return result
 
 # Streamlit интерфейс (без изменений)
+tit = st.title("Построитель графиков")
 with st.sidebar:
     x_min = st.number_input("Минимум", value=-10)
     x_max = st.number_input("Максимум", value=10)
