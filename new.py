@@ -39,9 +39,9 @@ def replace_abs_notation(expression):
         if expression[i] == 'x' and expression[i - 1].isdigit():
             result = expression[:i] + '*' + expression[i:]
             result = ''.join(result)
-        if expression[i] == 'x' and (expression[i + 1] == '(' or expression[i + 1].isdigit()):
-            result = expression[:i+1] + '*' + expression[i:]
-            result = ''.join(result)
+       # if expression[i] == 'x' and (expression[i + 1] == '(' or expression[i + 1].isdigit()):
+           # result = expression[:i+1] + '*' + expression[i:]
+            #result = ''.join(result)
     return result
 
 # Streamlit интерфейс (без изменений)
