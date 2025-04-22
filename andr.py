@@ -49,14 +49,15 @@ class MyCanvas(Widget):
 class Main(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.btn1 = Button(text = 'Test')
-        
+        self.xmin = TextInput(hint_text="Минимум", multiline=False, size_hint_x=1)
+        self.xmax = TextInput(hint_text="Максимум", multiline=False, size_hint_x=1)
     def build(self):
-        btn_box = BoxLayout(orientation = 'vertical', size_hint_x = 0.5)
+        x = BoxLayout(orientation = 'vertical', size_hint_x=1, padding=10, spacing=10)
         main = BoxLayout(orientation='vertical', size_hint_x=1)  
         bottom = MyCanvas(size_hint=(1, 0.5))
-        btn_box.add_widget(self.btn1)
-        main.add_widget(btn_box)  
+        x.add_widget(self.xmin)
+        x.add_widget(self.xmax)
+        main.add_widget(x)
         main.add_widget(bottom)
         return main
 Main().run()
