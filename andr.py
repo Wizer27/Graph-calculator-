@@ -47,7 +47,6 @@ class MyCanvas(Widget):
         self.rect.size = self.size     
 
 
-
             
 class Main(App):
     def __init__(self, **kwargs):
@@ -57,10 +56,36 @@ class Main(App):
         self.grin = CheckBox(active=False, color=[100, 100, 100, 5], size_hint_x=0.1,size_hint_y = 0.1)
         self.formula = TextInput(hint_text="Формула",multiline=False, size_hint_x = 1,size_hint_y = 0.1)
         self.fun2 = TextInput(hint_text="Формула",multiline=False, size_hint_x=1,size_hint_y = 0.1)
-        
-        
-        
-        
+        self.btn1 = Button(text = "Enter",on_press = self.main)
+    def replace_abs_notation(expression):
+        """Заменяет |x| на abs(x) в выражении (оригинальная функция без изменений)"""
+        stack = []
+        result = []
+        i = 0
+        n = len(expression)
+
+        while i < n:
+            if expression[i] == '|':
+                if stack:
+                    stack.pop()
+                    result.append(')')
+                else:
+                    stack.append('|')
+                    result.append('abs(')
+                i += 1
+            else:
+                result.append(expression[i])
+                i += 1
+                
+        result = ''.join(result).replace('^', '**')
+        for i in range(len(result)):
+            if result[i] == 'x' and (result[i - 1].isdigit() or result[i-1] == ')'):
+                result = result[:i] + '*' + result[i:]
+                result = ''.join(result)
+            if result[i] == 'x' and (result[i + 1] == '(' or result[i + 1].isdigit()):
+                result = result[:i+1] + '*' + result[i:]
+                result = ''.join(result)
+        return result
     def safe_evaluate(expr, variables=None):
         """Безопасная замена ne.evaluate() с ограниченным набором функций"""
         allowed_functions = {
@@ -71,7 +96,18 @@ class Main(App):
         }
         local_dict = {**(variables or {}), **allowed_functions}
         return ne.evaluate(expr, local_dict=local_dict, global_dict={})
-    
+    def main(self,instance):
+        x = linspace(-20,20,50)
+        try:
+            y = self.safe_evaluate(self.replace_abs_notation(self.formula))
+        except Exception as e:
+            print("Error")
+            y = np.zeros_like(x)
+        plt.plot(x,y)
+        y0 = np.asarray([0] * len(x))
+        plt.plot(x, y0, color='black')
+        plt.plot(y0, x, color='black')
+        plt.show()        
     def build(self):
         main = BoxLayout(orientation='vertical', size_hint_x=1)  
         x = BoxLayout(orientation = 'vertical', size_hint_x=0.5,size_hint_y = 0.5,padding=10, spacing=10)
@@ -86,6 +122,7 @@ class Main(App):
         main.add_widget(x)
         main.add_widget(gr)
         main.add_widget(fr_box)
-        main.add_widget(bottom)
+        main.add_widget(self.btn1)
+        #main.add_widget(bottom)
         return main
 Main().run()
