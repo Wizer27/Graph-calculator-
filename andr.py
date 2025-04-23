@@ -8,7 +8,10 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.togglebutton import ToggleButton
 from kivy.graphics import Rectangle
 from kivy.uix.widget import Widget
-
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy import *
+import numexpr as ne
 
 
 
@@ -54,6 +57,21 @@ class Main(App):
         self.grin = CheckBox(active=False, color=[100, 100, 100, 5], size_hint_x=0.1,size_hint_y = 0.1)
         self.formula = TextInput(hint_text="Формула",multiline=False, size_hint_x = 1,size_hint_y = 0.1)
         self.fun2 = TextInput(hint_text="Формула",multiline=False, size_hint_x=1,size_hint_y = 0.1)
+        
+        
+        
+        
+    def safe_evaluate(expr, variables=None):
+        """Безопасная замена ne.evaluate() с ограниченным набором функций"""
+        allowed_functions = {
+            'sin': np.sin, 'cos': np.cos, 'tan': np.tan,
+            'exp': np.exp, 'log': np.log, 'sqrt': np.sqrt,
+            'abs': abs
+
+        }
+        local_dict = {**(variables or {}), **allowed_functions}
+        return ne.evaluate(expr, local_dict=local_dict, global_dict={})
+    
     def build(self):
         main = BoxLayout(orientation='vertical', size_hint_x=1)  
         x = BoxLayout(orientation = 'vertical', size_hint_x=0.5,size_hint_y = 0.5,padding=10, spacing=10)
