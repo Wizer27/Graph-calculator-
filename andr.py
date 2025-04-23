@@ -99,7 +99,7 @@ class Main(App):
     def main(self,instance):
         x = linspace(-20,20,50)
         try:
-            y = self.safe_evaluate(self.replace_abs_notation(self.formula))
+            y = self.safe_evaluate(self.replace_abs_notation(self.formula),{'x':x})
         except Exception as e:
             print("Error")
             y = np.zeros_like(x)
