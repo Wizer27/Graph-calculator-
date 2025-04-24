@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
 
+def test(**args):
+    pass
 
 
 
