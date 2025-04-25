@@ -206,6 +206,7 @@ class LargeButton(Button):
         return super().on_touch_up(touch)
 
 class MainInterface(BoxLayout):
+
     def start_plot(self):
         print("### WORKING ###")
         x = linspace(int(self.ids.x_min.text),int(self.ids.x_max.text),500)
@@ -215,14 +216,21 @@ class MainInterface(BoxLayout):
         except Exception as e:
             print("### ERROR ###")
             y = np.zeros_like(x)
-        with open('test.txt','a+') as file:
+        with open('t2est.txt','a+') as file:
             file.write(self.ids.formula1.text + '\n')
+        if self.ids.formula2.text != '':
+            try:
+                y2 = safe_evaluate(replace_abs_notation(self.ids.formula2.text), {'x': x})
+            except Exception as e:
+                print("### ERROR ###")
+                y2 = np.zeros_like(x)
+        plt.plot(x,y)
+        if self.ids.formula2.text != '':
+            plt.plot(x,y2)                     
         y0 = np.asarray([0] * len(x))
         plt.plot(x, y0, color='black')
-        plt.plot(y0, x, color='black')    
-        plt.plot(x,y)
-        plt.show()             
-        
+        plt.plot(y0, x, color='black')                 
+        plt.show()
        
 
 class GraphApp(App):
