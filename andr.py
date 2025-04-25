@@ -11,9 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
-
-
-
+import re
 
 
 Builder.load_string('''
@@ -142,6 +140,7 @@ Builder.load_string('''
         text: "ПОСТРОИТЬ ГРАФИК"
         on_press: root.start_plot()
 ''')
+
 #локальные функции для графиков (не вставляй в класс)
 def safe_evaluate(expr, variables=None):
     """Безопасная замена ne.evaluate() с ограниченным набором функций"""
@@ -154,7 +153,13 @@ def safe_evaluate(expr, variables=None):
     local_dict = {**(variables or {}), **allowed_functions}
     return ne.evaluate(expr, local_dict=local_dict, global_dict={})
 
-
+def replace(expression):
+    expression = re.sub(r'\|(.+?)\|', r'abs(\1)', expression)
+    # Добавление * между числом и x (например, 2x → 2*x)
+    expression = re.sub(r'(\d)(x)', r'\1*\2', expression)
+    # Замена ^ на **
+    expression = expression.replace('^', '**')
+    return expression
 def replace_abs_notation(expression):
     """Заменяет |x| на abs(x) в выражении (оригинальная функция без изменений)"""
     stack = []
@@ -209,10 +214,10 @@ class MainInterface(BoxLayout):
 
     def start_plot(self):
         print("### WORKING ###")
-        x = linspace(int(self.ids.x_min.text),int(self.ids.x_max.text),500)
-        print(x)
+        print(self.ids.formula1.text)
+        x = linspace(int(self.ids.x_min.text),int(self.ids.x_max.text),50)
         try:
-            y = safe_evaluate(replace_abs_notation(self.ids.formula1.text), {'x': x})
+            y = safe_evaluate(replace(self.ids.formula1.text), {'x': x})
         except Exception as e:
             print("### ERROR ###")
             y = np.zeros_like(x)
@@ -220,7 +225,7 @@ class MainInterface(BoxLayout):
             file.write(self.ids.formula1.text + '\n')
         if self.ids.formula2.text != '':
             try:
-                y2 = safe_evaluate(replace_abs_notation(self.ids.formula2.text), {'x': x})
+                y2 = safe_evaluate(replace(self.ids.formula2.text), {'x': x})
             except Exception as e:
                 print("### ERROR ###")
                 y2 = np.zeros_like(x)
