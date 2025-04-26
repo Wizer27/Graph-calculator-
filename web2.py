@@ -54,7 +54,7 @@ with st.sidebar:
     grid = st.checkbox("Сетка")
     function = st.text_input("Формула", value='x') + ' '
     fun2 = st.text_input("Формула", value='')   
-    
+    file = st.file_uploader("Выбрать формулу из файла") 
     description = st.empty()
 
     if 'sin' in function:
