@@ -56,7 +56,7 @@ with st.sidebar:
     fun2 = st.text_input("Формула", value='')   
     file = st.file_uploader("Выбрать формулу из файла") 
     description = st.empty()
-
+    print(file)
     if 'sin' in function:
         description.text("Синус - это тригонометрическая функция, которая описывает колебания.")
     elif 'cos' in function:
