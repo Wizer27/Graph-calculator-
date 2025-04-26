@@ -237,7 +237,8 @@ class MainInterface(BoxLayout):
         plt.plot(y0, x, color='black')                 
         plt.show()
        
-
+def testing():
+    pass
 class GraphApp(App):
     def build(self):
         Window.clearcolor = (0.07, 0.07, 0.1, 1)
