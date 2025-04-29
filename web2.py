@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
-from easyocr import Reader
+#from easyocr import Reader
 from pypdf import PdfReader
 import re
 def safe_evaluate(expr, variables=None):
@@ -116,21 +116,21 @@ if grid:
 if file != None:
         name = file.name.split('.')
         print(name)
-        if 'jpg' in name:
-            reader = Reader(["en"])
-            im = file.name
-            t = reader.readtext(im,detail = 0)
-            for row in t:
-                print('-'+row)
-                if 'sin' in row:
+        #if 'jpg' in name:
+            ##reader = Reader(["en"])
+            #im = file.name
+            #t = reader.readtext(im,detail = 0)
+            #for row in t:
+                #print('-'+row)
+                #if 'sin' in row:
                     #x2 = linspace(x_min,x_max,steps)
-                    try:
-                        y3 = safe_evaluate(replace(row),{'x': x})
-                    except Exception as e:
-                        st.error(f"Ошибка в формуле {e}")
-                        y3 = np.zeros_like(x2)
-                    fig2 = plt.figure()
-                    plt.plot(x2,y3)
+                    #try:
+                        #y3 = safe_evaluate(replace(row),{'x': x})
+                    #except Exception as e:
+                        #st.error(f"Ошибка в формуле {e}")
+                        #y3 = np.zeros_like(x2)
+                    #fig2 = plt.figure()
+                    #plt.plot(x2,y3)
         if 'pdf' in name:
             reader = PdfReader(file.name)
             text = ""
