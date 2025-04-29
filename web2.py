@@ -5,7 +5,7 @@ from numpy import *
 import numexpr as ne
 from easyocr import Reader
 from pypdf import PdfReader
-
+import re
 def safe_evaluate(expr, variables=None):
     """Безопасная замена ne.evaluate() с ограниченным набором функций"""
     allowed_functions = {
@@ -47,8 +47,15 @@ def replace_abs_notation(expression):
             result = ''.join(result)
     return result
 
-# Streamlit интерфейс (без изменений)
+def replace(expression):
+    expression = re.sub(r'\|(.+?)\|', r'abs(\1)', expression)
+    # Добавление * между числом и x (например, 2x → 2*x)
+    expression = re.sub(r'(\d)(x)', r'\1*\2', expression)
+    # Замена ^ на **
+    expression = expression.replace('^', '**')
+    return expression
 
+# Streamlit интерфейс (без изменений)
 with st.sidebar:
     x_min = st.number_input("Минимум", value=-10)
     x_max = st.number_input("Максимум", value=10)
@@ -77,39 +84,6 @@ with st.sidebar:
 print(replace_abs_notation(function))
 print(function)
 ######Нейросеть######
-if file != None:
-        name = file.name.split('.')
-        print(name)
-        if 'jpg' in name:
-            reader = Reader(["en"])
-            im = file.name
-            t = reader.readtext(im,detail = 0)
-            for row in t:
-                print('-'+row)
-                if 'sin' in row:
-                    x2 = linspace(x_min,x_max,steps)
-                    try:
-                        y3 = safe_evaluate(replace_abs_notation(row),{'x': x})
-                    except Exception as e:
-                        st.error(f"Ошибка в формуле {e}")
-                        y3 = np.zeros_like(x2)
-                    fig2 = plt.figure()
-                    plt.plot(x2,y3)
-        if 'pdf' in name:
-            reader = PdfReader(file.name)
-            text = ""
-            for page in reader.pages:
-                text += page.extract_text()
-            print(text)
-            if 'sin' in text:
-                x2 = linspace(x_min,x_max,steps)
-                try:
-                    y3 = safe_evaluate(replace_abs_notation(text),{'x':x})
-                except Exception as e:
-                    st.error(f"Ошибка в формуле {e}")
-                    y3 = np.zeros_like(x2)
-            fig2 = plt.figure()
-            plt.plot(x2,y3)    
 # Вычисления (с заменой ne.evaluate на safe_evaluate)
 x = linspace(x_min, x_max, steps)
 try:
@@ -139,7 +113,41 @@ plt.plot(y0, x, color='black')
 if grid:
     plt.grid()
 
-st.pyplot(figure)
-
+if file != None:
+        name = file.name.split('.')
+        print(name)
+        if 'jpg' in name:
+            reader = Reader(["en"])
+            im = file.name
+            t = reader.readtext(im,detail = 0)
+            for row in t:
+                print('-'+row)
+                if 'sin' in row:
+                    #x2 = linspace(x_min,x_max,steps)
+                    try:
+                        y3 = safe_evaluate(replace(row),{'x': x})
+                    except Exception as e:
+                        st.error(f"Ошибка в формуле {e}")
+                        y3 = np.zeros_like(x2)
+                    fig2 = plt.figure()
+                    plt.plot(x2,y3)
+        if 'pdf' in name:
+            reader = PdfReader(file.name)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text()
+            print(text)
+            if 'sin' in text:
+                print("Sin in text")
+                #x2 = linspace(x_min,x_max,steps)
+                try:
+                    print('Working')
+                    y3 = safe_evaluate(replace(text),{'x':x})
+                except Exception as e:
+                    st.error(f"Ошибка в формуле {e}")
+                    y3 = np.zeros_like(x)
+            #fig2 = plt.figure()
+            plt.plot(x,y3)    
+            #st.pyplot(figure)
         
-    
+st.pyplot(figure)   
