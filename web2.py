@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
+from easyocr import Reader
+from pypdf import PdfReader
 
 def safe_evaluate(expr, variables=None):
     """Безопасная замена ne.evaluate() с ограниченным набором функций"""
@@ -54,10 +56,8 @@ with st.sidebar:
     grid = st.checkbox("Сетка")
     function = st.text_input("Формула", value='x') + ' '
     fun2 = st.text_input("Формула", value='')   
-    file = st.file_uploader("Выбрать формулу из файла") 
+    file = st.file_uploader("Выбрать формулу из файла")         
     description = st.empty()
-    if file != None:
-        print(file.name.split('.'))
     if 'sin' in function:
         description.text("Синус - это тригонометрическая функция, которая описывает колебания.")
     elif 'cos' in function:
@@ -76,6 +76,40 @@ with st.sidebar:
         description.text("")  
 print(replace_abs_notation(function))
 print(function)
+######Нейросеть######
+if file != None:
+        name = file.name.split('.')
+        print(name)
+        if 'jpg' in name:
+            reader = Reader(["en"])
+            im = file.name
+            t = reader.readtext(im,detail = 0)
+            for row in t:
+                print('-'+row)
+                if 'sin' in row:
+                    x2 = linspace(x_min,x_max,steps)
+                    try:
+                        y3 = safe_evaluate(replace_abs_notation(row),{'x': x})
+                    except Exception as e:
+                        st.error(f"Ошибка в формуле {e}")
+                        y3 = np.zeros_like(x2)
+                    fig2 = plt.figure()
+                    plt.plot(x2,y3)
+        if 'pdf' in name:
+            reader = PdfReader(file.name)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text()
+            print(text)
+            if 'sin' in text:
+                x2 = linspace(x_min,x_max,steps)
+                try:
+                    y3 = safe_evaluate(replace_abs_notation(text),{'x':x})
+                except Exception as e:
+                    st.error(f"Ошибка в формуле {e}")
+                    y3 = np.zeros_like(x2)
+            fig2 = plt.figure()
+            plt.plot(x2,y3)    
 # Вычисления (с заменой ne.evaluate на safe_evaluate)
 x = linspace(x_min, x_max, steps)
 try:
@@ -107,6 +141,5 @@ if grid:
 
 st.pyplot(figure)
 
-def test():
-    pass        
+        
     
