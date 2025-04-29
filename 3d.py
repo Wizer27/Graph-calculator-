@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from numpy import *
 import numexpr as ne
 from easyocr import Reader
-from pypdf import PdfReader
+#from pypdf import PdfReader
 import re
 from mpl_toolkits.mplot3d import Axes3D
 def safe_evaluate(expr, variables=None):
@@ -130,22 +130,22 @@ if grid:
 if file != None:
         print(file)
         name = file.name.split('.')
-        print(name)
-        if 'jpg' in name:
-            reader = Reader(["en"])
-            im = file
-            t = reader.readtext(im,detail = 0)
-            for row in t:
-                print('-'+row)
-                if 'sin' in row:
+        #print(name)
+        #if 'jpg' in name:
+            #reader = Reader(["en"])
+            #im = file
+            #t = reader.readtext(im,detail = 0)
+           # for row in t:
+               # print('-'+row)
+                #if 'sin' in row:
                     #x2 = linspace(x_min,x_max,steps)
-                    try:
-                        y3 = safe_evaluate(replace(row),{'x': x})
-                    except Exception as e:
-                        st.error(f"Ошибка в формуле {e}")
-                        y3 = np.zeros_like(x)
-                    fig2 = plt.figure()
-                    plt.plot(x,y3)
+                    #try:
+                        #y3 = safe_evaluate(replace(row),{'x': x})
+                    #except Exception as e:
+                        #st.error(f"Ошибка в формуле {e}")
+                        #y3 = np.zeros_like(x)
+                    #fig2 = plt.figure()
+                   # plt.plot(x,y3)
         if 'pdf' in name:
             reader = PdfReader(file)
             text = ""
