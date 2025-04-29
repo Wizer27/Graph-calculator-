@@ -1,0 +1,6 @@
+streamlit
+numpy
+matplotlib
+numexpr
+easyocr
+pypdf
