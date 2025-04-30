@@ -103,3 +103,5 @@ if grid:
     plt.grid()
 
 st.pyplot(figure)
+def test():
+    pass
