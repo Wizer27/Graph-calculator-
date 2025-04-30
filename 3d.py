@@ -164,5 +164,7 @@ if file != None:
             #fig2 = plt.figure()
             plt.plot(x,y3)    
             #st.pyplot(figure)
+def test():
+    pass
         
 st.pyplot(figure)    
